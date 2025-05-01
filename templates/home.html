@@ -1,0 +1,133 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="home-page">
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 hero-content" data-aos="fade-right">
+                    <h1 class="hero-title">Your Personal <span>Health Companion</span></h1>
+                    <p class="hero-subtitle">MediGuide helps you understand your symptoms and provides personalized health recommendations.</p>
+                    <div class="hero-buttons">
+                        {% if current_user.is_authenticated %}
+                            <a href="{{ url_for('chat') }}" class="btn btn-primary btn-lg me-3 pulse-animation">
+                                <i class="fas fa-comment-medical me-2"></i> Start Chat
+                            </a>
+                        {% else %}
+                            <a href="{{ url_for('signup') }}" class="btn btn-primary btn-lg me-3 pulse-animation">
+                                Get Started <i class="fas fa-arrow-right ms-2"></i>
+                            </a>
+                            
+                            <a href="{{ url_for('login_route') }}" class="btn btn-light btn-lg me-3">
+                                <i class="fas fa-sign-in-alt me-2"></i> Login
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-lg-6 hero-image" data-aos="fade-left">
+                    <img src="https://www.ilink-digital.com/wp-content/uploads/2023/05/Conversation-between-chat-bot-on-screen-of-phone-and-customer-scaled.jpg" alt="Doctor with tablet" class="img-fluid floating-animation">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section py-5">
+        <div class="container">
+            <div class="section-header text-center mb-5" data-aos="fade-up">
+                <h2>How MediGuide Helps You</h2>
+                <p class="lead">Our advanced AI-powered tools provide comprehensive health insights</p>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <h3>Symptom Analysis</h3>
+                        <p>Describe your symptoms and receive potential condition assessments with accuracy.</p>
+                        <div class="wave-animation"></div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-camera"></i>
+                        </div>
+                        <h3>Skin Analysis</h3>
+                        <p>Upload images of skin conditions to get instant analysis and recommendations.</p>
+                        <div class="wave-animation"></div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-heartbeat"></i>
+                        </div>
+                        <h3>Health Plans</h3>
+                        <p>Personalized diet, medication, and lifestyle recommendations for your condition.</p>
+                        <div class="wave-animation"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="how-it-works py-5 bg-light">
+        <div class="container">
+            <div class="section-header text-center mb-5" data-aos="fade-up">
+                <h2>How It Works</h2>
+                <p class="lead">Three simple steps to better health understanding</p>
+            </div>
+            
+            <div class="timeline">
+                <div class="timeline-item" data-aos="fade-right">
+                    <div class="timeline-content">
+                        <h3>Describe Symptoms</h3>
+                        <p>Enter at least three symptoms you're experiencing in our chat interface.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item" data-aos="fade-left">
+                    <div class="timeline-content">
+                        <h3>AI Analysis</h3>
+                        <p>Our advanced algorithms analyze your symptoms against medical databases.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item" data-aos="fade-right">
+                    <div class="timeline-content">
+                        <h3>Get Results</h3>
+                        <p>Receive potential conditions with detailed information and recommendations.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section py-5">
+        <div class="container text-center" data-aos="zoom-in">
+            <h2>Ready to Take Control of Your Health?</h2>
+            <p class="lead mb-4">Join thousands of users who are making informed health decisions with MediGuide</p>
+            {% if current_user.is_authenticated %}
+                <a href="{{ url_for('chat') }}" class="btn btn-light btn-lg">
+                    <i class="fas fa-comment-medical me-2"></i> Start Chat Now
+                </a>
+            {% else %}
+                <a href="{{ url_for('signup') }}" class="btn btn-light btn-lg me-3">
+                    Get Started Free
+                </a>
+                <a href="{{ url_for('login_route') }}" class="btn btn-outline-light btn-lg">
+                    <i class="fas fa-sign-in-alt me-2"></i> Login
+                </a>
+            {% endif %}
+        </div>
+    </section>
+</div>
+{% endblock %}

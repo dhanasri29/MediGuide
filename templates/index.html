@@ -1,0 +1,243 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="chatbot-page">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="chatbot-container" data-aos="fade-up">
+                    <div class="chatbot-header">
+                        <div class="chatbot-avatar">
+                            <img src="https://static.vecteezy.com/system/resources/previews/007/225/199/non_2x/robot-chat-bot-concept-illustration-vector.jpg" alt="MediGuide Bot">
+                        </div>
+                        <div class="chatbot-info">
+                            <h2>MediGuide Assistant</h2>
+                            <div class="status-indicator">
+                                <span class="status-dot"></span>
+                                <span>Online</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="chatbox" class="chatbox">
+                        <div id="messages">
+                            <div class="message bot-message">
+                                <div class="message-content">
+                                    <p>Hello! I'm your MediGuide assistant. Please describe at least three symptoms you're experiencing, separated by commas (e.g., fever, headache, cough).</p>
+                                    <div class="message-time">Just now</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-input-container">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <a href="{{ url_for('upload') }}" id="image-upload-btn" class="btn btn-outline-primary d-flex align-items-center justify-content-center" style="width: 45px;">
+                                    <i class="fas fa-camera"></i> 
+                                </a>
+                            </div>
+                            <input type="text" id="user-input" class="form-control" placeholder="Enter your symptoms (e.g., fever, headache, cough)...">
+                            
+                                <button id="send-btn" class="btn btn-primary">
+                                    <i class="fas fa-paper-plane"></i> Send
+                                </button>
+                           
+                        </div>
+                        <small class="form-text text-muted">Please enter at least three symptoms separated by commas.</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.chatbot-page {
+    background-image: 
+        linear-gradient(rgba(245, 249, 250, 0.95), rgba(245, 249, 250, 0.95)),
+        url('https://img.freepik.com/free-vector/medical-background-with-abstract-shapes_53876-93727.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    min-height: 100vh;
+    padding: 40px 0;
+}
+
+#image-upload-btn {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    
+}
+
+
+.input-group-append {
+    margin-left: 0;
+}
+
+.chatbot-container {
+    background-color: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(5px);
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const chatbox = document.getElementById('chatbox');
+    const messagesContainer = document.getElementById('messages');
+    const userInput = document.getElementById('user-input');
+    const sendBtn = document.getElementById('send-btn');
+    
+    // Auto-scroll to bottom of chat
+    function scrollToBottom() {
+        chatbox.scrollTop = chatbox.scrollHeight;
+    }
+    
+    // Add message to chat
+    function addMessage(content, isUser = false) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+        
+        const messageContent = document.createElement('div');
+        messageContent.className = 'message-content';
+        
+        const messageText = document.createElement('p');
+        messageText.innerHTML = content;
+        
+        const messageTime = document.createElement('div');
+        messageTime.className = 'message-time';
+        messageTime.textContent = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        
+        messageContent.appendChild(messageText);
+        messageContent.appendChild(messageTime);
+        messageDiv.appendChild(messageContent);
+        messagesContainer.appendChild(messageDiv);
+        
+        scrollToBottom();
+    }
+    
+    // Send message to backend
+    function sendMessage() {
+        const message = userInput.value.trim();
+        if (message) {
+            const symptoms = message.split(',').map(s => s.trim()).filter(s => s.length > 0);
+            
+            if (symptoms.length < 3) {
+                addMessage("Please enter at least three symptoms separated by commas.");
+                return;
+            }
+            
+            addMessage(message, true);
+            userInput.value = '';
+            
+            // Show typing indicator
+            const typingIndicator = document.createElement('div');
+            typingIndicator.className = 'message bot-message';
+            typingIndicator.innerHTML = `
+                <div class="message-content">
+                    <p class="typing-indicator">
+                        <span></span><span></span><span></span>
+                    </p>
+                </div>
+            `;
+            messagesContainer.appendChild(typingIndicator);
+            scrollToBottom();
+            
+            // Send to backend
+            fetch('/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({ symptoms: symptoms })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Remove typing indicator
+                messagesContainer.removeChild(typingIndicator);
+                
+                if (data.error) {
+                    addMessage(data.error);
+                } else {
+                    // Show disease prediction
+                    addMessage(`Based on your symptoms, you might be experiencing: ${data.disease}.`);
+                    
+                    // Add buttons for more details
+                    const buttonsDiv = document.createElement('div');
+                    buttonsDiv.className = 'message bot-message';
+                    buttonsDiv.innerHTML = `
+                        <div class="message-content">
+                            <p>Would you like more information about ${data.disease}?</p>
+                            <div class="detail-buttons">
+                                <button class="btn btn-sm btn-outline-primary detail-btn" data-detail="description">Description</button>
+                                <button class="btn btn-sm btn-outline-primary detail-btn" data-detail="precautions">Precautions</button>
+                                <button class="btn btn-sm btn-outline-primary detail-btn" data-detail="medications">Medications</button>
+                                <button class="btn btn-sm btn-outline-primary detail-btn" data-detail="diet">Diet</button>
+                                <button class="btn btn-sm btn-outline-primary detail-btn" data-detail="workout">Workout</button>
+                            </div>
+                        </div>
+                    `;
+                    messagesContainer.appendChild(buttonsDiv);
+                    scrollToBottom();
+                    
+                    // Add event listeners to detail buttons
+                    document.querySelectorAll('.detail-btn').forEach(button => {
+                        button.addEventListener('click', function() {
+                            const detailType = this.getAttribute('data-detail');
+                            fetch('/details', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRFToken': '{{ csrf_token() }}'
+                                },
+                                body: JSON.stringify({
+                                    disease: data.disease,
+                                    chat_id: data.chat_id,
+                                    detail_key: detailType
+                                })
+                            })
+                            .then(response => response.json())
+                            .then(details => {
+                                if (details.error) {
+                                    addMessage(details.error);
+                                } else {
+                                    let detailContent = details[detailType];
+                                    if (Array.isArray(detailContent)) {
+                                        detailContent = detailContent.map(item => `• ${item}`).join('\n');
+                                    }
+                                    addMessage(`<strong>${detailType.charAt(0).toUpperCase() + detailType.slice(1)} for ${data.disease}:</strong>\n${detailContent}`);
+                                }
+                            });
+                        });
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                addMessage("Sorry, there was an error processing your request. Please try again.");
+            });
+        }
+    }
+    
+    // Event listeners
+    sendBtn.addEventListener('click', sendMessage);
+    userInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            sendMessage();
+        }
+    });
+    
+    // Initialize scroll to bottom
+    scrollToBottom();
+});
+</script>
+{% endblock %}

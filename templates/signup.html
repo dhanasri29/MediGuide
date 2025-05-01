@@ -1,0 +1,266 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="auth-page">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 hero-image" data-aos="fade-right">
+                <div class="auth-illustration">
+                    <img src="https://payspaceworld.com/wp-content/uploads/2018/10/chatbot1.jpg" alt="Sign up illustration" class="img-fluid">
+                    <div class="illustration-caption">
+                        <h3>Join Our Health Community</h3>
+                        <p>Get personalized health insights and recommendations by creating your account.</p>
+                        <ul class="auth-features">
+                            <li><i class="fas fa-check-circle"></i> Symptom analysis</li>
+                            <li><i class="fas fa-check-circle"></i> Skin condition detection</li>
+                            <li><i class="fas fa-check-circle"></i> Personalized health plans</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-6" data-aos="fade-left">
+                <div class="auth-form-container">
+                    <div class="auth-form-header">
+                        <h2>Create Your Account</h2>
+                        <p>Already have an account? <a href="{{ url_for('login_route') }}">Sign in</a></p>
+                    </div>
+                    
+                    <form method="POST" action="{{ url_for('signup') }}" class="auth-form">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="form-group">
+                            {{ form.username.label(class="form-label") }}
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                {{ form.username(class="form-control", placeholder="Enter username") }}
+                            </div>
+                            {% for error in form.username.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="form-group">
+                            {{ form.email.label(class="form-label") }}
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                {{ form.email(class="form-control", placeholder="Enter email") }}
+                            </div>
+                            {% for error in form.email.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="form-group">
+                            {{ form.password.label(class="form-label") }}
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                {{ form.password(class="form-control", placeholder="Enter password") }}
+                                <button class="btn btn-outline-secondary toggle-password" type="button">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            {% for error in form.password.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="form-group">
+                            {{ form.password2.label(class="form-label") }}
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                {{ form.password2(class="form-control", placeholder="Repeat password") }}
+                                <button class="btn btn-outline-secondary toggle-password" type="button">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            {% for error in form.password2.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="form-check mb-4">
+                            <input class="form-check-input" type="checkbox" id="termsCheck" required>
+                            <label class="form-check-label" for="termsCheck">
+                                I agree to the <a href="#" data-bs-toggle="modal" data-bs-target="#termsModal">Terms of Service</a> and <a href="#" data-bs-toggle="modal" data-bs-target="#privacyModal">Privacy Policy</a>
+                            </label>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary w-100 btn-submit">
+                            <span class="btn-text">Create Account</span>
+                            <span class="btn-loader"><i class="fas fa-spinner fa-spin"></i></span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Terms and Conditions Modal -->
+<div class="modal fade" id="termsModal" tabindex="-1" aria-labelledby="termsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="termsModalLabel">Terms and Conditions</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h6 class="text-primary">AI/ML Health Assistant Terms of Service</h6>
+                <p>Last Updated: [Date]</p>
+                
+                <h6 class="mt-4">1. AI/ML Model Disclaimer</h6>
+                <p>The health predictions and recommendations provided by our service are generated by artificial intelligence and machine learning models. These models have been trained on medical datasets, but their accuracy:</p>
+                <ul>
+                    <li>Is limited by the quality and scope of the training data</li>
+                    <li>May not account for all individual health factors</li>
+                    <li>Should not be considered a substitute for professional medical advice</li>
+                    <li>May produce different results than real-world clinical diagnosis</li>
+                </ul>
+                
+                <h6 class="mt-4">2. Service Limitations</h6>
+                <p>Our AI health assistant is designed to provide preliminary health information only:</p>
+                <ul>
+                    <li>Accuracy may vary between 75-90% depending on symptom complexity</li>
+                    <li>The system cannot detect all possible medical conditions</li>
+                    <li>False positives and false negatives may occur</li>
+                    <li>Model performance improves with more detailed symptom input</li>
+                </ul>
+                
+                <h6 class="mt-4">3. User Responsibilities</h6>
+                <p>By using this service, you agree to:</p>
+                <ul>
+                    <li>Provide accurate and complete symptom information</li>
+                    <li>Not rely solely on AI recommendations for medical decisions</li>
+                    <li>Consult a qualified healthcare professional for diagnosis</li>
+                    <li>Understand that model outputs are probabilistic estimates</li>
+                </ul>
+                
+                <h6 class="mt-4">4. Data Usage</h6>
+                <p>Your health data will be used to:</p>
+                <ul>
+                    <li>Generate personalized health insights</li>
+                    <li>Improve our AI models (anonymized and aggregated)</li>
+                    <li>Provide better recommendations over time</li>
+                </ul>
+                
+                <h6 class="mt-4">5. Limitation of Liability</h6>
+                <p>We are not responsible for any health decisions made based on our AI recommendations. The service is provided "as is" without warranties of accuracy.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">I Understand</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Privacy Policy Modal -->
+<div class="modal fade" id="privacyModal" tabindex="-1" aria-labelledby="privacyModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="privacyModalLabel">Privacy Policy</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h6 class="text-primary">AI Health Assistant Privacy Policy</h6>
+                <p>Last Updated: [Date]</p>
+                
+                <h6 class="mt-4">1. Information We Collect</h6>
+                <p>To provide our AI health services, we collect:</p>
+                <ul>
+                    <li>Symptom descriptions you provide</li>
+                    <li>Health-related information you share</li>
+                    <li>Demographic information (age, gender for better predictions)</li>
+                    <li>Usage patterns to improve our models</li>
+                </ul>
+                
+                <h6 class="mt-4">2. How We Use Your Data</h6>
+                <p>Your information is used to:</p>
+                <ul>
+                    <li>Generate AI-powered health assessments</li>
+                    <li>Train and improve our machine learning models (anonymized)</li>
+                    <li>Personalize your health recommendations</li>
+                    <li>Monitor service quality and accuracy</li>
+                </ul>
+                
+                <h6 class="mt-4">3. Data Security</h6>
+                <p>We implement:</p>
+                <ul>
+                    <li>Encryption of all health data in transit and at rest</li>
+                    <li>Strict access controls to personal information</li>
+                    <li>Regular security audits of our AI systems</li>
+                    <li>Anonymization techniques for model training</li>
+                </ul>
+                
+                <h6 class="mt-4">4. AI Model Data Processing</h6>
+                <p>Our machine learning models:</p>
+                <ul>
+                    <li>Process your symptoms to generate predictions</li>
+                    <li>May use aggregated data to improve accuracy</li>
+                    <li>Do not store identifiable personal health information</li>
+                    <li>Employ differential privacy techniques where applicable</li>
+                </ul>
+                
+                <h6 class="mt-4">5. Your Rights</h6>
+                <p>You can:</p>
+                <ul>
+                    <li>Request access to your health data</li>
+                    <li>Ask for correction of inaccurate information</li>
+                    <li>Request deletion of your account and data</li>
+                    <li>Opt-out of model training contributions</li>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">I Understand</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Toggle password visibility
+    document.querySelectorAll('.toggle-password').forEach(button => {
+        button.addEventListener('click', function() {
+            const input = this.parentElement.querySelector('input');
+            const icon = this.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        });
+    });
+
+    // Form submission loader
+    document.querySelector('.auth-form').addEventListener('submit', function() {
+        const btn = this.querySelector('.btn-submit');
+        btn.disabled = true;
+        btn.querySelector('.btn-text').style.display = 'none';
+        btn.querySelector('.btn-loader').style.display = 'inline-block';
+    });
+
+    // Enable terms checkbox only after viewing both modals
+    let termsViewed = false;
+    let privacyViewed = false;
+    
+    document.getElementById('termsModal').addEventListener('shown.bs.modal', function() {
+        termsViewed = true;
+        updateTermsCheckbox();
+    });
+    
+    document.getElementById('privacyModal').addEventListener('shown.bs.modal', function() {
+        privacyViewed = true;
+        updateTermsCheckbox();
+    });
+    
+    function updateTermsCheckbox() {
+        const checkbox = document.getElementById('termsCheck');
+        checkbox.checked = termsViewed && privacyViewed;
+    }
+</script>
+{% endblock %}

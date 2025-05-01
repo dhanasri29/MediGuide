@@ -1,0 +1,104 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="auth-page">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 hero-image" data-aos="fade-right">
+                <div class="auth-illustration">
+                    <img src="https://botnation.ai/site/wp-content/uploads/2022/01/chatbot-gratuit.jpg" alt="Login illustration" class="img-fluid">
+                    <div class="illustration-caption">
+                        <h3>Welcome Back!</h3>
+                        <p>Access your personalized health dashboard and continue your health journey.</p>
+                        <ul class="auth-features">
+                            <li><i class="fas fa-check-circle"></i> Track your health history</li>
+                            <li><i class="fas fa-check-circle"></i> Get personalized recommendations</li>
+                            <li><i class="fas fa-check-circle"></i> Manage your health profile</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-6" data-aos="fade-left">
+                <div class="auth-form-container">
+                    <div class="auth-form-header">
+                        <h2>Sign In to Your Account</h2>
+                        <p>Don't have an account? <a href="{{ url_for('signup') }}">Sign up</a></p>
+                    </div>
+                    
+                    <form method="POST" action="{{ url_for('login_route') }}" class="auth-form">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="form-group">
+                            {{ form.username.label(class="form-label") }}
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                {{ form.username(class="form-control", placeholder="Enter username or email") }}
+                            </div>
+                            {% for error in form.username.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="form-group">
+                            {{ form.password.label(class="form-label") }}
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                {{ form.password(class="form-control", placeholder="Enter password") }}
+                                <button class="btn btn-outline-secondary toggle-password" type="button">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            {% for error in form.password.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="d-flex justify-content-between mb-4">
+                            <div class="form-check">
+                                {{ form.remember_me(class="form-check-input") }}
+                                {{ form.remember_me.label(class="form-check-label") }}
+                            </div>
+                            
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary w-100 btn-submit">
+                            <span class="btn-text">Sign In</span>
+                            <span class="btn-loader"><i class="fas fa-spinner fa-spin"></i></span>
+                        </button>
+                        
+                        
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Toggle password visibility
+    document.querySelectorAll('.toggle-password').forEach(button => {
+        button.addEventListener('click', function() {
+            const input = this.parentElement.querySelector('input');
+            const icon = this.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        });
+    });
+
+    // Form submission loader
+    document.querySelector('.auth-form').addEventListener('submit', function() {
+        const btn = this.querySelector('.btn-submit');
+        btn.disabled = true;
+        btn.querySelector('.btn-text').style.display = 'none';
+        btn.querySelector('.btn-loader').style.display = 'inline-block';
+    });
+</script>
+{% endblock %}
